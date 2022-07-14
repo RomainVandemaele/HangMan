@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">HangMan</string>
+    <string name="editLette">Enter letter</string>
+    <string name="main_try">TRY</string>
+    <string name="nTries">"Tries : "</string>
+    <string name="hidden">*****</string>
+    <string name="main_new_game">NEW GAME</string>
+</resources>
