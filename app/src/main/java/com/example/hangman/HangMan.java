@@ -1,5 +1,10 @@
 package com.example.hangman;
 
+import android.util.Log;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,15 +14,14 @@ public class HangMan {
     private String wordToGuess;
     private StringBuilder hiddenWord;
     private final int MAX_TRIES;
+    private List<String> words= new ArrayList<>();;
+
+    public HangMan() {
+        this(8);
+    }
 
     public HangMan(int numberOfTries) {
         MAX_TRIES = numberOfTries;
-        this.initGame();
-    }
-
-    public void initGame() {
-        this.remainingTries = MAX_TRIES;
-        List<String> words = new ArrayList<>();
         words.add("abilities");
         words.add("abroad");
         words.add("academic");
@@ -28,11 +32,34 @@ public class HangMan {
         words.add("electrical");
         words.add("kotlin");
         words.add("java");
+    }
+
+    public void initGame() {
+        this.remainingTries = MAX_TRIES;
         Random sr = new Random();
-        wordToGuess = words.get(sr.nextInt(words.size()) );
+        wordToGuess =this.selectWord();
         hiddenWord = new StringBuilder();
         for (int i=0;i<wordToGuess.length();++i) {
             hiddenWord.append("*");
+        }
+    }
+
+    private String selectWord() {
+        Random sr = new SecureRandom();
+        try  {
+            int lineIndex = sr.nextInt(10000);
+            Log.d("INDEX","Index : "+lineIndex);
+            FileReader fileReader = new FileReader("C:/Users/STG0805/AndroidStudioProjects/HangMan/app/src/main/worldist english.txt");
+            char[] line = new char[32];
+            for (int i = 0; i<lineIndex;++i) {
+                fileReader.read(line);
+            }
+            String word = String.valueOf(line);
+            fileReader.close();
+            return word;
+        }catch (IOException e) {
+            Log.d("INDEX","Index : "+e.toString());
+            return words.get(sr.nextInt(this.words.size()) );
         }
     }
 
@@ -50,12 +77,12 @@ public class HangMan {
         return letterFound;
     }
 
-    private void setRemainingTries(int remainingTries) {
+    protected void setRemainingTries(int remainingTries) {
         this.remainingTries = remainingTries;
     }
 
-    private void setHiddenWord(StringBuilder hiddenWord) {
-        this.hiddenWord = hiddenWord;
+    protected void setHiddenWord(String hiddenWord) {
+        this.hiddenWord = new StringBuilder(hiddenWord);
     }
 
     public String getWordToGuess() {
@@ -64,6 +91,10 @@ public class HangMan {
 
     public boolean isOver() {
         return this.hiddenWord.toString().equals(this.wordToGuess);
+    }
+
+    public boolean noTryLeft() {
+        return this.remainingTries<=0;
     }
 
     public void setWordToGuess(String wordToGuess) {
